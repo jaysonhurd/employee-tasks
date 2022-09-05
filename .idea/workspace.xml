@@ -5,23 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd92fa62-cebc-44ce-ba64-b550e12b8838" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/employee-tasks.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/employee-tasks.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go_build_employee_tasks_go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/pkg/elasticsearch/elasticsearch.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/pkg/postgres/postgres.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/employee-tasks/models/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/postgres/db_setup.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/projectsetup.bash" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/tasks/tasks.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tools/postgres/populate_postgres.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/employee-tasks.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/employee-tasks.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go_build_employee_tasks_go" beforeDir="false" afterPath="$PROJECT_DIR$/go_build_employee_tasks_go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/pkg/elasticsearch/elasticsearch.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/elasticsearch/elasticsearch.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/pkg/postgres/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/postgres/postgres.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/employee-tasks/models/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/tasks/models/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/postgres/db_setup.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/projectsetup.bash" beforeDir="false" afterPath="$PROJECT_DIR$/tools/projectsetup.bash" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +36,18 @@
   <component name="GOROOT" url="file:///opt/go/go1.17" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.gitignore" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/cmd/employee-tasks.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/config/config.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/internal/pkg/elasticsearch/elasticsearch.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/internal/pkg/postgres/postgres.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pkg/tasks/models/config.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tools/postgres/populate_postgres.sql" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tools/projectsetup.bash" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -62,7 +72,14 @@
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/home/jayson",
-    "nodejs_package_manager_path": "npm"
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "Console"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "elasticsearch",
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="RunManager">
@@ -98,15 +115,20 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+        <line-breakpoint type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/pkg/postgres/postgres.go</url>
+          <line>173</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/cmd/employee-tasks.go</url>
-          <line>42</line>
-          <option name="timeStamp" value="5" />
+          <line>53</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/pkg/elasticsearch/elasticsearch.go</url>
-          <line>8</line>
-          <option name="timeStamp" value="8" />
+          <line>47</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

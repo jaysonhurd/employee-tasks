@@ -15,4 +15,9 @@
 # vendor/
 
 go_build_employee_tasks_go
-*log
+*.log
+*.json
+
+*.crt
+*.pem
+*rsa*
