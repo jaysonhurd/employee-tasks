@@ -3,14 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/jaysonhurd/employee-tasks/internal/pkg/elasticsearch"
 	"github.com/jaysonhurd/employee-tasks/internal/pkg/postgres"
+	"github.com/jaysonhurd/employee-tasks/pkg/tasks"
 	"github.com/jaysonhurd/employee-tasks/pkg/tasks/models"
 	"github.com/rs/zerolog"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"time"
 )
@@ -60,64 +59,30 @@ func main() {
 	fmt.Println(info.WithHuman())
 	ES := elasticsearch.New(es, DBs, &logger)
 
-	// Run gin endpoints
-	r := gin.Default()
-	rp := r.Group("/api/v1/")
+	err = ES.EmptyES()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-	rp.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	err = ES.LoadTasksFromPostgres()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	err = ES.LoadEmployeesFromPostgres()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-	rp.GET("/postgres/tasks", func(c *gin.Context) {
-		tasks, err := DBs.AllTasks()
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "bad request")
-			return
-		}
-		c.JSON(http.StatusOK, tasks)
-	})
+	routes := tasks.New(DBs, ES, *config, &logger)
 
-	rp.GET("/postgres/employee/id/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		employee, err := DBs.EmployeeByID(id)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, &employee)
-	})
-
-	rp.GET("/postgres/employee/nickname/:nickname", func(c *gin.Context) {
-		nickname := c.Param("nickname")
-		employee, err := DBs.EmployeeByNickname(nickname)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, &employee)
-	})
-
-	rp.POST("/elasticsearch/load/employees", func(c *gin.Context) {
-		err := ES.LoadEmployeesFromPostgres()
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusAccepted, gin.H{"message": "data loaded into elasticsearch successfully!"})
-	})
-
-	rp.POST("/elasticsearch/load/tasks", func(c *gin.Context) {
-		err := ES.LoadTasksFromPostgres()
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusAccepted, gin.H{"message": "data loaded into elasticsearch successfully!"})
-	})
-
-	r.Run("127.0.0.1:8080")
+	err = routes.MakeRoutes()
+	if err != nil {
+		logger.Fatal().Msgf(err.Error())
+		return
+	}
 
 }
 

@@ -47,6 +47,7 @@ Put the `http_ca.crt` in the `config` directory so that the Go application can a
 ```azure
 cd config
 docker cp :/usr/share/elasticsearch/config/certs/http_ca.crt .
+chmod 644 http_ca.crt
 ```
 
 Reset the password to ElasticSearch:

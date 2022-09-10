@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/lib/pq"
+	"github.com/jaysonhurd/employee-tasks/pkg/tasks/models"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -12,10 +12,10 @@ import (
 )
 
 type Postgreser interface {
-	AllTasks() ([]Task, error)
-	EmployeeByID(ID string) (Employee, error)
-	EmployeeByNickname(nickname string) (Employee, error)
-	AllEmployees() ([]Employee, error)
+	AllTasks() ([]models.Task, error)
+	EmployeeByID(ID string) (models.Employee, error)
+	EmployeeByNickname(nickname string) (models.Employee, error)
+	AllEmployees() ([]models.Employee, error)
 }
 
 type PostgresConn struct {
@@ -23,39 +23,9 @@ type PostgresConn struct {
 	SqlClient     *sql.DB
 }
 
-type PostgresConfig struct {
-	Host     string `json:"host"`
-	Port     int    `json:"port"`
-	Database string `json:"database"`
-	User     string `json:"user"`
-	Password string `json:"password"`
-	SSLMode  string `json:"sslmode"`
-}
-
 type postgres struct {
 	conn *PostgresConn
 	l    *zerolog.Logger
-}
-
-type Task struct {
-	ID          int           `json:"id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	Create_time string        `json:"create_time"`
-	Owners      pq.Int32Array `json:"owners"`
-	Private     bool          `json:"private"`
-	Due_by      string        `json:"due_by"`
-}
-
-type Employee struct {
-	Employee_id    int    `json:"employee_id"`
-	Nickname       string `json:"nickname"`
-	First_name     string `json:"first_name"`
-	Last_name      string `json:"last_name"`
-	Street_address string `json:"street_address"`
-	City           string `json:"city"`
-	State          string `json:"state"`
-	Zip            string `json:"zip"`
 }
 
 func New(
@@ -68,8 +38,8 @@ func New(
 	}
 }
 
-func (p *postgres) AllTasks() ([]Task, error) {
-	tasks := make([]Task, 0)
+func (p *postgres) AllTasks() ([]models.Task, error) {
+	tasks := make([]models.Task, 0)
 	db := p.conn.SqlClient
 	query := `SELECT * FROM workers.public.tasks where private != true`
 
@@ -86,11 +56,11 @@ func (p *postgres) AllTasks() ([]Task, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var row Task
+		var row models.Task
 		if err = rows.Scan(&row.ID, &row.Name, &row.Description, &row.Create_time, &row.Owners, &row.Private, &row.Due_by); err != nil {
 			p.l.Error().Msgf(fmt.Sprintf("Error scanning rows in All Task request to Postgres DB - %s", err.Error()))
 		}
-		tasks = append(tasks, Task{
+		tasks = append(tasks, models.Task{
 			ID:          row.ID,
 			Name:        row.Name,
 			Description: row.Description,
@@ -104,8 +74,8 @@ func (p *postgres) AllTasks() ([]Task, error) {
 	return tasks, nil
 }
 
-func (p *postgres) AllEmployees() ([]Employee, error) {
-	employees := make([]Employee, 0)
+func (p *postgres) AllEmployees() ([]models.Employee, error) {
+	employees := make([]models.Employee, 0)
 	db := p.conn.SqlClient
 	query := `SELECT * FROM workers.public.employees`
 
@@ -122,11 +92,11 @@ func (p *postgres) AllEmployees() ([]Employee, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var row Employee
+		var row models.Employee
 		if err = rows.Scan(&row.Employee_id, &row.Nickname, &row.First_name, &row.Last_name, &row.Street_address, &row.City, &row.State, &row.Zip); err != nil {
 			p.l.Error().Msgf(fmt.Sprintf("Error scanning rows in All Task request to Postgres DB - %s", err.Error()))
 		}
-		employees = append(employees, Employee{
+		employees = append(employees, models.Employee{
 			Employee_id:    row.Employee_id,
 			Nickname:       row.Nickname,
 			First_name:     row.First_name,
@@ -141,8 +111,8 @@ func (p *postgres) AllEmployees() ([]Employee, error) {
 	return employees, nil
 }
 
-func (p *postgres) EmployeeByID(ID string) (Employee, error) {
-	var employee Employee
+func (p *postgres) EmployeeByID(ID string) (models.Employee, error) {
+	var employee models.Employee
 	var err error
 	id, err := strconv.Atoi(ID)
 	if err != nil {
@@ -163,8 +133,8 @@ func (p *postgres) EmployeeByID(ID string) (Employee, error) {
 	return employee, nil
 }
 
-func (p *postgres) EmployeeByNickname(nickname string) (Employee, error) {
-	var employee Employee
+func (p *postgres) EmployeeByNickname(nickname string) (models.Employee, error) {
+	var employee models.Employee
 	var err error
 	if err != nil {
 		return employee, err
@@ -186,7 +156,7 @@ func (p *postgres) EmployeeByNickname(nickname string) (Employee, error) {
 
 // NewPostgresConnection - returns a PostgresConn connection and its conenct string for reference.  This can then be passed down
 // through the service so that multiple connections do need to be made unncessarily.
-func NewPostgresConnection(c PostgresConfig, l *zerolog.Logger) (db *PostgresConn, err error) {
+func NewPostgresConnection(c models.PostgresConfig, l *zerolog.Logger) (db *PostgresConn, err error) {
 	cString := fmt.Sprintf("host=%s port=%d database=%s user=%s password=%s sslmode=%s", c.Host, c.Port, c.Database, c.User, c.Password, c.SSLMode)
 	m := &PostgresConn{
 		ConnectString: cString,
